@@ -13,6 +13,7 @@ model Founder {
   companyName String  @unique
   ctoName     String  @unique
   users       User[]  // one-to-many relation
+  domain      String
 }
 
 model User {
