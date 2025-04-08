@@ -20,8 +20,10 @@ model User {
   id           String   @id @default(uuid())
   name         String
   email        String   @unique
+  gmailAppPassword String?   @unique
   hits         Int?     @default(2)
   referalCode  String?  @unique
   founderId    String?
   founder      Founder?  @relation(fields: [founderId], references: [id])
+  template     String? 
 }
