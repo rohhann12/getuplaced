@@ -1,3 +1,4 @@
+"use client"
 import React from 'react'
 import { Navbar } from '../components/navbar/Navbar'
 import  {Hero}  from '../components/hero/Hero'
@@ -8,7 +9,7 @@ function page() {
     <div>
       <Navbar/>
       <Hero/>
-      <Works/>
+      {/* <Works/> */}
     </div>
   )
 }
