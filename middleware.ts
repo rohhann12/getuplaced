@@ -9,7 +9,7 @@ export default async function middleware(req: NextRequest) {
     return NextResponse.redirect(new URL("/", req.url));
   }
 
-  console.log("Token verified:", token.email);
+  // console.log("Token verified:", token.email);
   return NextResponse.next();
 }
 
