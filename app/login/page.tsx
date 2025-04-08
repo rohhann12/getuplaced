@@ -13,7 +13,7 @@ export default function LoginPage() {
       const session = await getSession()
       if (session) {
         setLogged(true)
-        router.push('/dashboard')
+        router.push('/user/dashboard')
       }
     }
     checkSession()
@@ -23,7 +23,7 @@ export default function LoginPage() {
     <div className='flex items-center justify-center h-screen bg-gray-50'>
       {!logged && (
         <button
-          onClick={() => signIn('google', { callbackUrl: '/dashboard' })}
+          onClick={() => signIn('google', { callbackUrl: '/user/dashboard' })}
           className='flex items-center gap-3 bg-white border border-gray-300 px-6 py-3 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 hover:-translate-y-1'
         >
           <FcGoogle size={24} />
