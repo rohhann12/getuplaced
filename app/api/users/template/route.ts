@@ -1,17 +1,26 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getToken } from "next-auth/jwt";
-import  prisma  from "../../../utils/db"; // adjust if your prisma path is different
+import  prisma  from "../../../utils/db"; 
 
 export async function GET(req: NextRequest) {
-  const token = await getToken({ req});
-  if (!token?.email) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const token = await getToken({ req });
+  if (!token?.email) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
 
   const user = await prisma.user.findUnique({
     where: { email: token.email },
-    select: { template: true }, // just get template
+    select: {
+      template: {
+        select: {
+          template: true,
+          subject: true,
+        },
+      },
+    },
   });
 
-  return NextResponse.json({ template: user?.template || null });
+  return NextResponse.json({ templates: user?.template || [] });
 }
 
 export async function POST(req: NextRequest) {
@@ -22,8 +31,12 @@ export async function POST(req: NextRequest) {
 
   const updated = await prisma.user.update({
     where: { email: token.email },
-    data: { template: body.template || "" },
+      data: {
+        template: {
+          create: body,
+        },
+    },
   });
-
-  return NextResponse.json({ success: true, template: updated.template });
+  
+  return NextResponse.json({ success: true, template: updated });
 }
