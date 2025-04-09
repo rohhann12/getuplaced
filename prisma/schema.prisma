@@ -31,5 +31,6 @@ model template{
   id        String @id @default(uuid())
   template  String
   subject   String
-  user      User?  @relation(references:[email],fields: [id])
+  userId    String
+  user      User?  @relation(references:[id],fields: [userId])
 }
