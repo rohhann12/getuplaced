@@ -7,7 +7,6 @@ export async function GET(req: NextRequest) {
   if (!token?.email) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
-
   const user = await prisma.user.findUnique({
     where: { email: token.email },
     select: {
