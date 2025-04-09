@@ -3,7 +3,7 @@ import { getToken } from 'next-auth/jwt'
 import { NextRequest, NextResponse } from 'next/server'
 import nodemailer from 'nodemailer'
 
-export default async function POST(req:NextRequest):Promise<any>{
+export  async function POST(req:NextRequest):Promise<any>{
     const token=await getToken({req,secret: process.env.NEXTAUTH_SECRET})
     const email=token?.email
     

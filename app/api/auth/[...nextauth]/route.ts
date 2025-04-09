@@ -3,7 +3,7 @@ import GoogleProvider from "next-auth/providers/google";
 import { JWT } from "next-auth/jwt";
 import prisma from "../../../utils/db";
 
-export async function upsertGoogleUser(googleUser: any) {
+async function lol(googleUser: any) {
   const { email, name } = googleUser;
 
   if (!email) return null;
@@ -30,7 +30,7 @@ interface ExtendedToken extends JWT {
   email?: string;
 }
 
-export const authOptions = NextAuth({
+const authOptions = NextAuth({
   providers: [
     GoogleProvider({
       clientId: process.env.G_CLIENT_ID!,
@@ -62,7 +62,7 @@ export const authOptions = NextAuth({
       return session;
     },
     async signIn({ user }) {
-      await upsertGoogleUser({
+      await lol({
         email: user.email,
         name: user.name,
       });
