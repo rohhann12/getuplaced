@@ -3,9 +3,25 @@ import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/app/utils/db";
 import { getToken } from "next-auth/jwt";
 
-export async function GET() {
-  const code = GenerateRandomStrings();
-  return NextResponse.json({ code });
+export async function GET(req:NextRequest) {
+  const token = await getToken({ req,secret: process.env.NEXTAUTH_SECRET });
+  if (!token?.email) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+  const finder=prisma.user.findUnique({
+    where:{email:token.email},
+    select:{
+      referalCode:true
+    }
+  })
+  if(!finder){
+    const a=GenerateRandomStrings()
+    return NextResponse.json({
+      message:a
+    })
+  }else{
+    return NextResponse.json({finder});
+  }
 }
 
 export async function POST(req: NextRequest) {
