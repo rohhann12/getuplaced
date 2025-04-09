@@ -26,11 +26,11 @@ const items = [
     url: "/user/hits",
     icon: Inbox,
   },
-  {
-    title: "Sent Emails",
-    url: "/user/emails/sent",
-    icon: Calendar,
-  },
+  // {
+  //   title: "Sent Emails",
+  //   url: "/user/emails/sent",
+  //   icon: Calendar,
+  // },
   {
     title: "Mail Templates",
     url: "/user/templates",

@@ -14,7 +14,7 @@ export async function GET(req:NextRequest) {
       referalCode:true
     }
   })
-  if(!finder){
+  if(!finder?.referalCode){
     const a=GenerateRandomStrings()
     if(a){
       await prisma.user.update({
@@ -48,25 +48,30 @@ export async function POST(req: NextRequest) {
       where: { referalCode },
     });
 
-    if (checker) {
-      const user = await prisma.user.findUnique({
-        where: { email },
-        select: { hits: true },
-      });
-
-      if (!user) {
-        return NextResponse.json({ error: "User not found" }, { status: 404 });
-      }
-
-      const updated = await prisma.user.update({
-        where: { email },
-        data: { hits: user.hits! + 1 },
-      });
-
-      return NextResponse.json({ success: true, updatedHits: updated.hits });
-    } else {
+    if (!checker) {
       return NextResponse.json({ error: "Referral code not found" }, { status: 400 });
     }
+
+    const user = await prisma.user.findUnique({
+      where: { email },
+      select: { hits: true, referalCode: true },
+    });
+
+    if (!user) {
+      return NextResponse.json({ error: "User not found" }, { status: 404 });
+    }
+
+    if (user.referalCode === checker.referalCode) {
+      return NextResponse.json({ message: "You cannot refer yourself" }, { status: 400 });
+    }
+
+    const updated = await prisma.user.update({
+      where: { email },
+      data: { hits: user.hits! + 1 },
+    });
+
+    return NextResponse.json({ success: true, updatedHits: updated.hits });
+
   } catch (err) {
     console.error("POST Error:", err);
     return NextResponse.json({ error: "Something went wrong" }, { status: 500 });
