@@ -22,8 +22,14 @@ model User {
   email        String   @unique
   gmailAppPassword String?   @unique
   hits         Int?     @default(2)
-  referalCode  String?  @unique
+  referalCode  Int?  @unique
   founderId    String?
   founder      Founder?  @relation(fields: [founderId], references: [id])
-  template     String? 
+  template     template[]
+}
+model template{
+  id        String @id @default(uuid())
+  template  String
+  subject   String
+  user      User?  @relation(references:[email],fields: [id])
 }
