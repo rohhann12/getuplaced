@@ -8,7 +8,7 @@ export async function GET(req:NextRequest) {
   if (!token?.email) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
-  const finder=prisma.user.findUnique({
+  const finder=await prisma.user.findUnique({
     where:{email:token.email},
     select:{
       referalCode:true
@@ -16,6 +16,14 @@ export async function GET(req:NextRequest) {
   })
   if(!finder){
     const a=GenerateRandomStrings()
+    if(a){
+      await prisma.user.update({
+        where:{email:token.email},
+        data:{
+          referalCode:Number(a)
+        }
+      })
+    }
     return NextResponse.json({
       message:a
     })
