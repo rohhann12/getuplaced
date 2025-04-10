@@ -6,7 +6,7 @@ import nodemailer from 'nodemailer'
 export  async function POST(req:NextRequest):Promise<any>{
     const token=await getToken({req,secret: process.env.NEXTAUTH_SECRET})
     const email=token?.email
-    
+    const useremail=email
     if(email){
         const appPass=await prisma.user.findUnique({
             where:{email
@@ -17,11 +17,10 @@ export  async function POST(req:NextRequest):Promise<any>{
         if (!appPass?.gmailAppPassword) {
             return NextResponse.json({ message: "App password not found" }, { status: 400 });
         }
-        
         const transporter = nodemailer.createTransport({
             service:"gmail",
             auth:{
-                user : "rsharma7_be22@thapar.edu",
+                user : email,
                 pass: appPass.gmailAppPassword,
 
             }
@@ -41,27 +40,30 @@ export  async function POST(req:NextRequest):Promise<any>{
               }
             }
           });
-          
-        console.log("type of finder",typeof(userWithTemplates))
-        async function sendOtpEmail(email:string , otp:string ){
-            const mailOptions = {
-                from : email,
-                to : finder.map(e => e.email),   //app map here to map from founders list
-                subject: userWithTemplates?.template[0]?.subject,
-                jtext: userWithTemplates?.template[0]?.template
 
-            }
-        
-            try{
-                transporter.sendMail(mailOptions);
-                console.log(`otp sent to ${email}  :${otp}`);
-            }
+        if(finder && userWithTemplates){
+            async function sendOtpEmail(){
+                const mailOptions = {
+                    from : useremail ||'default@example.com',
+                    to : finder.map(e=>e.email), 
+                    subject: userWithTemplates?.template[0]?.subject,
+                    text: userWithTemplates?.template[0]?.template
     
-            catch(error){
-                console.log(error);
+                }
+            
+                try{
+                    transporter.sendMail(mailOptions);
+                    console.log(`email sent`);
+                }
+        
+                catch(error){
+                    console.log(error);
+                }
             }
+            await sendOtpEmail();
+            return NextResponse.json({ message: "Emails sent" });
+        }else{
+            return NextResponse.json({ message: "Emails not sent" });
         }
-        await sendOtpEmail(email, "123456");
-        return NextResponse.json({ message: "OTP emails sent" });
     }
 }
