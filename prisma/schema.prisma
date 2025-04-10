@@ -14,6 +14,7 @@ model Founder {
   ctoName     String  @unique
   domain      String?
   users       User[]
+  sent        sent[]
 }
 
 model User {
@@ -25,12 +26,22 @@ model User {
   gmailAppPassword String?   @unique
   referalCode      Int?      @unique
   founder          Founder?  @relation(fields: [founderId], references: [id])
-  template         template?
+  template         template[]
+  user             sent[]
+}
+model template {
+  id        String   @id @default(uuid())
+  template  String?
+  subject   String?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
 }
 
-model template {
-  id       String @id @default(uuid())
-  template String
-  subject  String
-  User     User   @relation(fields: [id], references: [email])
+model sent{
+  id String @id @default(uuid())
+  userId    String
+  FounderId String
+  isSent    Boolean @default(false)  
+  user      User @relation(fields: [userId],references: [id])  
+  founder   Founder @relation(fields: [FounderId],references: [id])
 }

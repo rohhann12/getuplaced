@@ -46,8 +46,8 @@ export  async function POST(req:NextRequest):Promise<any>{
                 const mailOptions = {
                     from : useremail ||'default@example.com',
                     to : finder.map(e=>e.email), 
-                    subject: userWithTemplates?.template[0]?.subject,
-                    text: userWithTemplates?.template[0]?.template
+                    subject: userWithTemplates?.template[0]?.subject || "subject",
+                    text: userWithTemplates?.template[0]?.template || ""
     
                 }
             
