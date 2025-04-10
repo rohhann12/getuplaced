@@ -32,7 +32,6 @@ export async function GET(req: NextRequest) {
       })
   
       const hasPassword = user?.gmailAppPassword
-      // console.log("hi",user?.gmailAppPassword)
       return NextResponse.json({ hasPassword }, { status: 200 })
     } catch (error) {
       console.error('Error checking Gmail App Password:', error)
