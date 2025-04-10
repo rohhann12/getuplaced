@@ -12,25 +12,25 @@ model Founder {
   email       String  @unique
   companyName String  @unique
   ctoName     String  @unique
-  users       User[]  // one-to-many relation
-  domain      String
+  domain      String?
+  users       User[]
 }
 
 model User {
-  id           String   @id @default(uuid())
-  name         String
-  email        String   @unique
+  id               String    @id @default(uuid())
+  name             String
+  email            String    @unique
+  hits             Int?      @default(2)
+  founderId        String?
   gmailAppPassword String?   @unique
-  hits         Int?     @default(2)
-  referalCode  Int?  @unique
-  founderId    String?
-  founder      Founder?  @relation(fields: [founderId], references: [id])
-  template     template[]
+  referalCode      Int?      @unique
+  founder          Founder?  @relation(fields: [founderId], references: [id])
+  template         template?
 }
-model template{
-  id        String @id @default(uuid())
-  template  String
-  subject   String
-  userId    String
-  user      User?  @relation(references:[id],fields: [userId])
+
+model template {
+  id       String @id @default(uuid())
+  template String
+  subject  String
+  User     User   @relation(fields: [id], references: [email])
 }
