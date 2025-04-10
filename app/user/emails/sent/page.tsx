@@ -1,4 +1,4 @@
-import AppSidebar from "@/components/sidebar/sidebar";
+import { AppSidebar } from "@/components/app-sidebar/sidebar";
 
 export default async function Dashboard(){
   return(

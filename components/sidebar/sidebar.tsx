@@ -52,33 +52,33 @@ export default function AppSidebar() {
   const { data: session } = useSession();
 
   return (
-    <div className="flex min-h-screen  text-white">
+    <div className="flex min-h-screen text-white">
       <div className="h-full z-50 gap-4 border-r border-gray-800">
         <Sidebar className="bg-black text-white">
           <SidebarContent className="bg-black text-white">
             <SidebarGroup>
-              <SidebarGroupLabel className="text-xl text-white">
+              <SidebarGroupLabel className="text-xl text-white font-bold p-4">
                 {session?.user?.name ? `Sup ${session.user.name.split(" ")[0]}` : null}
               </SidebarGroupLabel>
               <SidebarGroupContent className="bg-black text-white">
-                <SidebarMenu className="gap-6 mt-4 ml-2 text-5xl font-extrabold text-white">
+                <SidebarMenu className="gap-2 mt-4 ml-2 text-lg font-medium text-white">
                   {items.map((item) => (
-                    <SidebarMenuItem key={item.title}>
+                    <SidebarMenuItem key={item.title} className="mb-2">
                       <SidebarMenuButton asChild>
                         {item.callback ? (
                           <button
                             onClick={item.callback}
-                            className="flex items-center gap-2 hover:text-gray-300"
+                            className="flex items-center gap-3 p-3 rounded-lg w-full transition-all duration-300 hover:bg-gray-800 hover:text-green-400"
                           >
-                            <item.icon />
+                            <item.icon className="h-5 w-5" />
                             <span>{item.title}</span>
                           </button>
                         ) : (
                           <Link
                             href={item.url}
-                            className="flex items-center gap-2 hover:text-gray-300"
+                            className="flex items-center gap-3 p-3 rounded-lg w-full transition-all duration-300 hover:bg-gray-800 hover:text-green-400"
                           >
-                            <item.icon />
+                            <item.icon className="h-5 w-5" />
                             <span>{item.title}</span>
                           </Link>
                         )}
