@@ -10,41 +10,49 @@ const dummyEmails = [
     status: 'Success', 
     name: 'Kenneth Thompson',
     email: 'ken99@example.com', 
-    companyName: 'TechCorp Inc.'
+    companyName: 'TechCorp Inc.',
+    template: 'tech'
   },
   { 
     id: 2, 
     status: 'Success', 
     name: 'Abraham Wilson',
     email: 'abe45@example.com', 
-    companyName: 'Innovation Labs'
+    companyName: 'Innovation Labs',
+    template: 'tech'
   },
   { 
     id: 3, 
     status: 'Processing', 
     name: 'Monserrat Davis',
     email: 'monserrat44@example.com', 
-    companyName: 'Future Systems'
+    companyName: 'Future Systems',
+    template: 'non-tech'
   },
   { 
     id: 4, 
     status: 'Success', 
     name: 'Silas Anderson',
     email: 'silas22@example.com', 
-    companyName: 'Digital Solutions'
+    companyName: 'Digital Solutions',
+    template: 'tech'
   },
   { 
     id: 5, 
     status: 'Failed', 
     name: 'Carmella Martinez',
     email: 'carmella@example.com', 
-    companyName: 'Cloud Dynamics'
+    companyName: 'Cloud Dynamics',
+    template: 'non-tech'
   }
 ]
 
 export default function Dashboard() {
   const [selectedEmails, setSelectedEmails] = useState<number[]>([])
   const [selectAll, setSelectAll] = useState(false)
+  const [emailTemplates, setEmailTemplates] = useState<{[key: number]: 'tech' | 'non-tech'}>(
+    Object.fromEntries(dummyEmails.map(email => [email.id, email.template as 'tech' | 'non-tech']))
+  )
 
   const handleSelectAll = () => {
     if (selectAll) {
@@ -67,9 +75,19 @@ export default function Dashboard() {
     }
   }
 
+  const handleTemplateChange = (id: number, template: 'tech' | 'non-tech') => {
+    setEmailTemplates(prev => ({
+      ...prev,
+      [id]: template
+    }))
+  }
+
   const handleSendEmails = () => {
-    // Handle sending emails here
-    console.log('Sending emails to:', selectedEmails)
+    // Handle sending emails here with template information
+    console.log('Sending emails to:', selectedEmails.map(id => ({
+      id,
+      template: emailTemplates[id]
+    })))
   }
 
   const getStatusColor = (status: string) => {
@@ -103,10 +121,10 @@ export default function Dashboard() {
               className="w-64 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-200 text-black placeholder-gray-500"
             />
           </div>
-          <button className="flex items-center space-x-2 px-4 py-2 bg-white border rounded-lg hover:bg-gray-50 text-black">
+          {/* <button className="flex items-center space-x-2 px-4 py-2 bg-white border rounded-lg hover:bg-gray-50 text-black">
             <span>Columns</span>
             <ChevronDown className="h-4 w-4" />
-          </button>
+          </button> */}
         </div>
 
         <div className="overflow-x-auto">
@@ -140,6 +158,12 @@ export default function Dashboard() {
                     <ChevronDown className="h-4 w-4" />
                   </div>
                 </th>
+                <th className="px-4 py-3 text-left text-sm font-medium text-black">
+                  <div className="flex items-center space-x-1">
+                    <span>Template</span>
+                    <ChevronDown className="h-4 w-4" />
+                  </div>
+                </th>
                 <th className="w-12 px-4 py-3"></th>
               </tr>
             </thead>
@@ -162,6 +186,16 @@ export default function Dashboard() {
                   <td className="px-4 py-3 text-sm text-black">{email.name}</td>
                   <td className="px-4 py-3 text-sm text-black">{email.email}</td>
                   <td className="px-4 py-3 text-sm text-black">{email.companyName}</td>
+                  <td className="px-4 py-3 text-sm">
+                    <select
+                      value={emailTemplates[email.id]}
+                      onChange={(e) => handleTemplateChange(email.id, e.target.value as 'tech' | 'non-tech')}
+                      className="w-full p-1 border rounded-md text-black bg-white focus:ring-2 focus:ring-gray-200 focus:outline-none"
+                    >
+                      <option value="tech">Tech Role</option>
+                      <option value="non-tech">Non-Tech Role</option>
+                    </select>
+                  </td>
                   <td className="px-4 py-3">
                     <button className="text-black hover:text-gray-600">
                       <MoreHorizontal className="h-5 w-5" />
@@ -189,7 +223,7 @@ export default function Dashboard() {
           disabled={selectedEmails.length === 0}
           className={`flex items-center space-x-2 px-6 py-3 rounded-lg shadow-lg transition-all duration-200 ${
             selectedEmails.length > 0
-              ? 'bg-black text-white hover:bg-gray-800 hover:scale-105'
+              ? 'bg-white text-black font-sembold hover:bg-gray-800 hover:scale-105'
               : 'bg-gray-100 text-gray-400 cursor-not-allowed'
           }`}
         >
