@@ -45,3 +45,4 @@ model sent{
   user      User @relation(fields: [userId],references: [id])  
   founder   Founder @relation(fields: [FounderId],references: [id])
 }
+
