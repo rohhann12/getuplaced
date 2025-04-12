@@ -107,18 +107,6 @@ export default function AppPasswordAndSender() {
           >
             {isLoading ? 'Saving...' : 'Save / Update Password'}
           </button>
-
-          <button
-            onClick={sendEmails}
-            disabled={!hasPassword || isLoading}
-            className={`w-full p-2.5 md:p-3 rounded-lg font-medium text-white transition-all duration-300 text-sm md:text-base ${
-              !hasPassword 
-                ? 'bg-gray-400 cursor-not-allowed' 
-                : 'bg-black hover:bg-gray-500'
-            }`}
-          >
-            {isLoading ? 'Sending...' : 'Send Emails'}
-          </button>
         </div>
 
         {message && (

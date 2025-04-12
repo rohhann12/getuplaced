@@ -192,8 +192,8 @@ export default function Dashboard() {
                       onChange={(e) => handleTemplateChange(email.id, e.target.value as 'tech' | 'non-tech')}
                       className="w-full p-1 border rounded-md text-black bg-white focus:ring-2 focus:ring-gray-200 focus:outline-none"
                     >
-                      <option value="tech">Tech Role</option>
-                      <option value="non-tech">Non-Tech Role</option>
+                      <option value="tech">Tech </option>
+                      <option value="non-tech">Non-Tech </option>
                     </select>
                   </td>
                   <td className="px-4 py-3">

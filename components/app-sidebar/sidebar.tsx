@@ -1,3 +1,4 @@
+"use client"
 import {
     Sidebar,
     SidebarContent,
@@ -7,7 +8,7 @@ import {
   } from "@/components/ui/sidebar"
   import { signOut, useSession } from "next-auth/react";
   import Link from "next/link";
-  import { Home, Inbox, Mails, Users, LogOut, Menu } from "lucide-react";
+  import { Home, Inbox, Mails, Users, LogOut, Menu, Settings } from "lucide-react";
   import { usePathname } from "next/navigation";
   import { useState, useEffect } from "react";
   
@@ -34,7 +35,7 @@ import {
     },
     {
       title: "Settings",
-      icon: Users,
+      icon: Settings,
       href: "/user/settingss"
     }
   ];

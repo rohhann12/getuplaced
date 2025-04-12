@@ -22,7 +22,7 @@ const TemplateForm = ({ type, isOpen, onClose }: TemplateFormProps) => {
       <div className="h-full flex flex-col p-6">
         <div className="flex justify-between items-center mb-6">
           <h3 className="text-xl font-bold text-gray-800">
-            {type === 'tech' ? 'Tech Role Template' : 'Non-Tech Role Template'}
+            {type === 'tech' ? 'Tech  Template' : 'Non-Tech Template'}
           </h3>
           <button
             onClick={onClose}
@@ -124,7 +124,7 @@ export default function TemplateInput() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
                 </svg>
               </div> */}
-              <h3 className="text-xl font-bold text-gray-800">Tech Role Template</h3>
+              <h3 className="text-xl font-bold text-gray-800">Tech Template</h3>
               <p className="text-gray-600 text-center">Configure your template for technical positions</p>
             </div>
           </div>
