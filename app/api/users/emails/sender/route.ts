@@ -47,6 +47,7 @@ export  async function POST(req:NextRequest):Promise<any>{
                     from : useremail ||'default@example.com',
                     to : finder.map(e=>e.email), 
                     subject: userWithTemplates?.template[0]?.subject || "subject",
+                    //TO-DO need to fix this as well
                     text: userWithTemplates?.template[0]?.template || ""
     
                 }
