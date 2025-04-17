@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "User" ADD COLUMN     "sentEmail" BIGINT NOT NULL DEFAULT 0;

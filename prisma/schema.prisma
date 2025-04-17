@@ -8,27 +8,29 @@ datasource db {
 }
 
 model Founder {
-  id          String  @id @default(uuid())
-  email       String  @unique
-  companyName String  @unique
-  ctoName     String  @unique
+  id          String               @id @default(uuid())
+  email       String               @unique
+  companyName String               @unique
+  ctoName     String               @unique
   domain      String?
   users       User[]
-  sent        sent[]
+  userStatuses UserFounderStatus[] @relation("FounderToStatus")
 }
 
 model User {
-  id               String    @id @default(uuid())
+  id               String               @id @default(uuid())
   name             String
-  email            String    @unique
-  hits             Int?      @default(2)
+  email            String               @unique
+  hits             Int?                 @default(2)
   founderId        String?
-  gmailAppPassword String?   @unique
-  referalCode      Int?      @unique
-  founder          Founder?  @relation(fields: [founderId], references: [id])
+  gmailAppPassword String?              @unique
+  referalCode      Int?                 @unique
+  founder          Founder?             @relation(fields: [founderId], references: [id])
   template         template[]
-  user             sent[]
+  userStatuses     UserFounderStatus[]  @relation("UserToStatus")
+  sentEmail        Int                  @default(0)
 }
+
 model template {
   id        String   @id @default(uuid())
   template  String?
@@ -37,12 +39,15 @@ model template {
   user      User     @relation(fields: [userId], references: [id])
 }
 
-model sent{
-  id String @id @default(uuid())
-  userId    String
-  FounderId String
-  isSent    Boolean @default(false)  
-  user      User @relation(fields: [userId],references: [id])  
-  founder   Founder @relation(fields: [FounderId],references: [id])
-}
+model UserFounderStatus {
+  id         String   @id @default(uuid())
+  userId     String
+  founderId  String
+  isSent     Boolean  @default(false)
 
+  user       User     @relation("UserToStatus", fields: [userId], references: [id])
+  founder    Founder  @relation("FounderToStatus", fields: [founderId], references: [id])
+
+  @@unique([userId, founderId])  
+  @@map("sent")                  
+}
