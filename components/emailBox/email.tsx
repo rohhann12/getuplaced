@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Send } from 'lucide-react';
 import axios from 'axios';
 
-interface Email {
+interface Data {
   id: number;
   ctoName: string;
   email: string;
@@ -12,66 +12,90 @@ interface Email {
 }
 
 interface DashboardProps {
-  emails: Email[];
+  prop: Data[];
+  calls: number;
 }
 
-export default function Dashboard({ emails }: DashboardProps) {
-  const [sent, setSent] = useState<number>(0);
-  const [selectedEmails, setSelectedEmails] = useState<number[]>([]);
+export default function Dashboard({ prop,calls }: DashboardProps) {
+ const [selectedEmails, setSelectedEmails] = useState<number[]>([]);
   const [selectAll, setSelectAll] = useState(false);
   const [emailTemplates, setEmailTemplates] = useState<Record<number, 'tech' | 'non-tech'>>({});
+  const [selectedData, setSelectedData] = useState<Data[]>([]);
 
+  // basically every click pr we check ki leng of array is equal to 5 ya ni
   useEffect(() => {
-    if (Array.isArray(emails)) {
-      const templates = Object.fromEntries(emails.map(email => [email.id, email.template]));
+    if (Array.isArray(prop)) {
+      const templates = Object.fromEntries(prop.map(email => [email.id, email.template,email.companyName,email.ctoName,email.email]));
       setEmailTemplates(templates);
     }
-  }, [emails]);
-
-  const emailCounter = async () => {
-    try {
-      const response = await axios.get('/api/users/dashboard');
-      setSent(0);
-    } catch (error) {
-      console.error('Failed to fetch email count:', error);
+  }, [prop]);
+  // const handleSelectAll = () => {
+  //   setSelectedEmails(selectAll ? [] : prop.map(email => email.id));
+  //   setSelectAll(!selectAll);
+  // };
+  const handleSelectAll = () => {
+    const isSelectingAll = !selectAll;
+    setSelectAll(isSelectingAll);
+  
+    if (isSelectingAll) {
+      const allIds = prop.map(email => email.id);
+      setSelectedEmails(allIds);
+      setSelectedData(prop); // all data selected
+    } else {
+      setSelectedEmails([]);
+      setSelectedData([]); // none selected
     }
   };
-
-  useEffect(() => {
-    emailCounter();
-  }, []);
-
-  const handleSelectAll = () => {
-    setSelectedEmails(selectAll ? [] : emails.map(email => email.id));
-    setSelectAll(!selectAll);
-  };
-
+  
+  
   const handleSelectEmail = (id: number) => {
     setSelectedEmails(prev => {
       const updated = prev.includes(id)
         ? prev.filter(emailId => emailId !== id)
         : [...prev, id];
   
-      setSelectAll(updated.length === emails.length);
+      // Get the full email object
+      const emailData = prop.find(e => e.id === id);
+  
+      // Update selectedData
+      setSelectedData(prevData => {
+        if (updated.includes(id)) {
+          return prevData.some(e => e.id === id)
+            ? prevData
+            : [...prevData, emailData!];
+        } else {
+          return prevData.filter(e => e.id !== id);
+        }
+      });
+  
+      // Update selectAll
+      setSelectAll(updated.length === prop.length);
       return updated;
     });
   };
-
-  const handleTemplateChange = (id: number, template: 'tech' | 'non-tech') => {
+  
+  
+  // ismei bhi har usko ek state deni padegi warna woh ek se hie sarein change kredera
+  const handleTemplateChange = (id: number, template: 'tech') => {
     setEmailTemplates(prev => ({ ...prev, [id]: template }));
   };
 
-  const handleSendEmails =async () => {
-    const payload = selectedEmails.map(id => ({
-      id,
-      template: emailTemplates[id]
+  const handleSendEmails = async () => {
+    const payload = selectedData.map(entry => ({
+      id: entry.id,
+      name: entry.ctoName,
+      email: entry.email,
+      company: entry.companyName,
+      template: emailTemplates[entry.id]
     }));
-    const send=await axios.post("/api/users/emails/sender",{
-
-    })
-    console.log('Sending emails to:', payload);
+  
+    console.log('Sending prop to:', payload);
+  
+    // Send to backend
+    // await axios.post("/api/users/prop/sender", payload);
   };
-
+  
+  
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'verified':
@@ -90,12 +114,14 @@ export default function Dashboard({ emails }: DashboardProps) {
       {/* Email Counter */}
       <div className="mb-8 p-4 bg-white rounded-lg shadow">
         <h2 className="text-lg font-semibold text-black">Emails Sent to Founders</h2>
-        <p className="text-3xl font-bold mt-2 text-black">{sent}</p>
+        <p className="text-3xl font-bold mt-2 text-black">{calls}</p>
       </div>
 
       {/* Email Table */}
       <div className="mb-4 bg-white rounded-lg shadow">
-
+        <div className='p-4 rounded-xl'>
+          
+        </div>
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead className="bg-gray-50">
@@ -116,19 +142,19 @@ export default function Dashboard({ emails }: DashboardProps) {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200">
-              {Array.isArray(emails) ? emails.map((email) => (
+              {Array.isArray(prop) ? prop.map((email) => (
                 <tr key={email.id} className="hover:bg-gray-50">
                   <td className="px-4 py-3">
-                    <input
+                    {/* <input
                       type="checkbox"
                       checked={selectedEmails.includes(email.id)}
                       onChange={() => handleSelectEmail(email.id)}
                       className="rounded border-gray-300 text-black focus:ring-black"
-                    />
+                    /> */}
                   </td>
                   <td className="px-4 py-3">
-                    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(email.status)}`}>
-                      {email.status}
+                    <span className={`inline-flex items-center px-2 py-1.5 rounded-full text-sm font-medium ${getStatusColor(email.status)}`}>
+                      Verified
                     </span>
                   </td>
                   <td className="px-4 py-3 text-sm text-black">{email.ctoName}</td>
@@ -137,17 +163,16 @@ export default function Dashboard({ emails }: DashboardProps) {
                   <td className="px-4 py-3 text-sm">
                     <select
                       value={emailTemplates[email.id]}
-                      onChange={(e) => handleTemplateChange(email.id, e.target.value as 'tech' | 'non-tech')}
+                      onChange={(e) => handleTemplateChange(email.id, e.target.value as 'tech')}
                       className="w-full p-1 border rounded-md text-black bg-white focus:ring-2 focus:ring-gray-200 focus:outline-none"
                     >
-                      <option value="tech">Tech</option>
-                      <option value="non-tech">Non-Tech</option>
+                      <option value="tech">Template 1</option>
                     </select>
                   </td>
                 </tr>
               )) : (
                 <tr>
-                  <td colSpan={6} className="px-4 py-6 text-center text-gray-500">No emails to display</td>
+                  <td colSpan={6} className="px-4 py-6 text-center text-gray-500">No prop to display</td>
                 </tr>
               )}
             </tbody>
@@ -155,11 +180,11 @@ export default function Dashboard({ emails }: DashboardProps) {
         </div>
 
         <div className="px-4 py-3 border-t flex justify-between items-center text-sm text-black">
-          <div>{selectedEmails.length} of {emails.length} row(s) selected</div>
-          <div className="flex space-x-2">
+          <div>{selectedEmails.length} of {prop.length} row(s) selected</div>
+          {/* <div className="flex space-x-2">
             <button className="px-3 py-1 rounded hover:bg-gray-100 text-black">Previous</button>
             <button className="px-3 py-1 rounded hover:bg-gray-100 text-black">Next</button>
-          </div>
+          </div> */}
         </div>
       </div>
 

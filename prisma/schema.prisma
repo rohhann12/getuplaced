@@ -36,6 +36,7 @@ model template {
   template  String?
   subject   String?
   userId    String
+  domain    String   
   user      User     @relation(fields: [userId], references: [id])
 }
 

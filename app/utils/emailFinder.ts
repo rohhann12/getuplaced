@@ -29,6 +29,7 @@ export async function Email(arr: any[]) {
             id: e.founderId
           },
           select: {
+            id:true,
             email: true,
             ctoName:true,
             companyName:true

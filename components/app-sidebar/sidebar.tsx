@@ -36,7 +36,7 @@ import {
     {
       title: "Settings",
       icon: Settings,
-      href: "/user/settingss"
+      href: "/user/settings"
     }
   ];
   
