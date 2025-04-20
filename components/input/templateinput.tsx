@@ -90,7 +90,7 @@ const TemplateForm = ({ type, isOpen, onClose }: TemplateFormProps) => {
           <div className="flex justify-end space-x-3">
             <button
               onClick={onClose}
-              className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+              className="px-4 py-2 text-gray-600 hover:bg-gray-600 rounded-lg transition-colors"
             >
               Cancel
             </button>
@@ -111,47 +111,40 @@ export default function TemplateInput() {
 
   return (
     <div className="relative min-h-[80vh] w-full">
-      {!selectedTemplate ? (
-        <div className="grid grid-cols-2 gap-6 w-full  max-w-4xl mx-auto">
-          {/* Tech Template Box */}
-          <div
-            onClick={() => setSelectedTemplate('tech')}
-            className="bg-white p-6 rounded-xl shadow-lg border hover:scale-105 border-gray-200 hover:shadow-xl transition-all duration-300 cursor-pointer"
-          >
-            <div className="flex flex-col items-center justify-center h-40 space-y-4">
-              {/* <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
-                </svg>
-              </div> */}
-              <h3 className="text-xl font-bold text-gray-800">Tech Template</h3>
-              <p className="text-gray-600 text-center">Configure your template for technical positions</p>
-            </div>
-          </div>
-
-          {/* Non-Tech Template Box */}
-          <div
-            onClick={() => setSelectedTemplate('non-tech')}
-            className="bg-white p-6 rounded-xl shadow-lg border hover:scale-105 border-gray-200 hover:shadow-xl transition-all duration-300 cursor-pointer"
-          >
-            <div className="flex flex-col items-center justify-center h-40 space-y-4">
-              {/* <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                </svg>
-              </div> */}
-              <h3 className="text-xl font-bold text-gray-800">Non-Tech Template</h3>
-              <p className="text-gray-600 text-center">Configure your template for non-technical positions</p>
-            </div>
-          </div>
+  {!selectedTemplate ? (
+    <div className="flex justify-center items-start min-h-[100vh] w-full">
+      {/* Tech Template Box */}
+      <div
+        onClick={() => setSelectedTemplate('tech')}
+        className="bg-white p-6 rounded-xl shadow-lg border hover:scale-105 border-gray-200 hover:shadow-xl transition-all duration-300 cursor-pointer"
+      >
+        <div className="flex flex-col items-center justify-center h-40 space-y-4">
+          <h3 className="text-xl font-bold text-gray-800">Template-1</h3>
+          <p className="text-gray-600 text-center">Configure your template</p>
         </div>
-      ) : (
-        <TemplateForm
-          type={selectedTemplate}
-          isOpen={true}
-          onClose={() => setSelectedTemplate(null)}
-        />
-      )}
+      </div>
+
+      {/* Non-Tech Template Box (commented out) */}
+      {/*
+      <div
+        onClick={() => setSelectedTemplate('non-tech')}
+        className="bg-white p-6 rounded-xl shadow-lg border hover:scale-105 border-gray-200 hover:shadow-xl transition-all duration-300 cursor-pointer"
+      >
+        <div className="flex flex-col items-center justify-center h-40 space-y-4">
+          <h3 className="text-xl font-bold text-gray-800">Non-Tech Template</h3>
+          <p className="text-gray-600 text-center">Configure your template for non-technical positions</p>
+        </div>
+      </div>
+      */}
     </div>
+  ) : (
+    <TemplateForm
+      type={selectedTemplate}
+      isOpen={true}
+      onClose={() => setSelectedTemplate(null)}
+    />
+  )}
+</div>
+
   );
 }

@@ -1,12 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/app/utils/db";
 import { getToken } from "next-auth/jwt";
-
+// for how many emails sent
 export async function GET(req:NextRequest){
     const token=await getToken({req,secret: process.env.NEXTAUTH_SECRET})
-    // we have to query the amount of emails sent
     const user=token?.email
-
     const finder=await prisma.user.findUnique({
         where:{
             email:user || ""
@@ -29,4 +27,8 @@ export async function GET(req:NextRequest){
             message:"error"
         })
     }
+}
+
+export async function POST(){
+    // used to trigger another backend request which will call the nodemailer
 }
