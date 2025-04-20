@@ -64,9 +64,7 @@ export function DataTable<TData, TValue>({
     try {
       const passwordChecker = await axios.get("http://localhost:3000/api/users/gmailPassChecker")
   
-      if (passwordChecker.data.success) {
-        console.log("Gmail app password exists. Sending email...")
-  
+      if (passwordChecker.data.success) {  
         const sendEmail = await axios.post("http://localhost:3000/api/users/emails/sender", {
           data: JSON.stringify(selectedData),
         })
@@ -75,7 +73,6 @@ export function DataTable<TData, TValue>({
         })
         console.log('Email sent:', sendEmail.data)
       } else {
-        console.log("No Gmail app password. Redirecting to settings...")
         toast.success("No Gmail app password. Redirecting to settings...",{
           duration: 3000,
         })

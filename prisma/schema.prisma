@@ -38,14 +38,16 @@ model template {
   userId    String
   domain    String   
   user      User     @relation(fields: [userId], references: [id])
+
+  @@unique([userId, domain])
 }
+
 
 model UserFounderStatus {
   id         String   @id @default(uuid())
   userId     String
   founderId  String
   isSent     Boolean  @default(false)
-
   user       User     @relation("UserToStatus", fields: [userId], references: [id])
   founder    Founder  @relation("FounderToStatus", fields: [founderId], references: [id])
 
