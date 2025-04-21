@@ -68,11 +68,23 @@ export async function POST(req: NextRequest): Promise<any> {
       subject: userWithTemplates?.template[0]?.subject || "Default Subject",
       text: userWithTemplates?.template[0]?.template || "Default template text",
     }
-
+    const dataSize=data.length
     // Send the email
-    await transporter.sendMail(mailOptions)
+    const emailSent=await transporter.sendMail(mailOptions)
     console.log(`Emails sent successfully`)
-
+      const user = await prisma.user.findUnique({
+        where: { email },
+        select: { sentEmail: true },
+      })
+      if (emailSent && user) {
+        await prisma.user.update({
+          where: { email },
+          data: {
+            sentEmail: (user.sentEmail || 0) + dataSize,
+          },
+        })
+      }
+          
     // Return a success message
     return NextResponse.json({ message: "Emails sent successfully" })
 

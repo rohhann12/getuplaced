@@ -34,16 +34,16 @@ export const columns: ColumnDef<Data>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: "email",
-    header: "Email",
-  },
-  {
     accessorKey: "ctoName",
     header: "Name",
   },
   {
     accessorKey: "companyName",
     header: "Company Name",
+  },
+  {
+    accessorKey: "email",
+    header: "Email",
   },
   {
     accessorKey: "Template",
