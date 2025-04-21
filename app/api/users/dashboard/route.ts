@@ -2,30 +2,35 @@ import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/app/utils/db";
 import { getToken } from "next-auth/jwt";
 // for how many emails sent
-export async function GET(req:NextRequest){
-    const token=await getToken({req,secret: process.env.NEXTAUTH_SECRET})
-    const user=token?.email
-    const finder=await prisma.user.findUnique({
-        where:{
-            email:user || ""
+
+export async function GET(req: NextRequest) {
+    const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET })
+    const user = token?.email
+  
+    try {
+      const finder = await prisma.user.findUnique({
+        where: {
+          email: user || '',
         },
-        select:{
-            sentEmail:true
-        }
-    })
-    if (finder) {
-        const safeMessage = {
-            ...finder,
-            sentEmail: Number(finder.sentEmail), // or use .toString() if needed
-        };
-    
+        select: {
+          sentEmail: true,
+        },
+      })
+  
+      if (finder?.sentEmail !== undefined && finder?.sentEmail !== null) {
         return NextResponse.json({
-            message: safeMessage
-        });    
-    }else{
-        return NextResponse.json({
-            message:"error"
+          sentEmail: Number(finder.sentEmail),
         })
+      } else {
+        return NextResponse.json({
+          error: 'No sentEmail found',
+        }, { status: 404 })
+      }
+    } catch (error) {
+      console.error('Error fetching sentEmail:', error)
+      return NextResponse.json({
+        error: 'Internal server error',
+      }, { status: 500 })
     }
 }
 

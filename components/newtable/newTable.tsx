@@ -1,5 +1,4 @@
 "use client"
-// axios
 import {
   ColumnDef,
   flexRender,
@@ -76,7 +75,7 @@ export function DataTable<TData, TValue>({
         toast.success("No Gmail app password. Redirecting to settings...",{
           duration: 3000,
         })
-        navigate.push("/user/settings")
+        navigate.push("/user/profile")
       }
     } catch (error) {
       console.error("Error during email sending:", error)
@@ -86,14 +85,15 @@ export function DataTable<TData, TValue>({
   const selectedRows = table.getSelectedRowModel().rows
 
   return (
-    <div className="rounded-md border !bg-white !text-black p-4">
+    <div className="rounded-md border p-4 font-bold">
       <Table>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id}>
               {headerGroup.headers.map((header) => {
                 return (
-                  <TableHead key={header.id}>
+                  <TableHead key={header.id} className="text-white">
+
                     {header.isPlaceholder
                       ? null
                       : flexRender(
@@ -112,6 +112,7 @@ export function DataTable<TData, TValue>({
               <TableRow
                 key={row.id}
                 data-state={row.getIsSelected() && "selected"}
+                className={row.getIsSelected() ? "bg-white text-black" : ""}
               >
                 {row.getVisibleCells().map((cell) => (
                   <TableCell key={cell.id}>
