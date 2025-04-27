@@ -84,8 +84,6 @@ export async function POST(req: NextRequest): Promise<any> {
           },
         })
       }
-          
-    // Return a success message
     return NextResponse.json({ message: "Emails sent successfully" })
 
   } catch (error) {

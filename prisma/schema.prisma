@@ -32,14 +32,12 @@ model User {
 }
 
 model template {
-  id        String   @id @default(uuid())
+  id        String   @id 
+  name      String?
   template  String?
   subject   String?
   userId    String
-  domain    String   
   user      User     @relation(fields: [userId], references: [id])
-
-  @@unique([userId, domain])
 }
 
 

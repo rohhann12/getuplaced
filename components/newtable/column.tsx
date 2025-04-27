@@ -1,13 +1,14 @@
 "use client"
+
 import { ColumnDef } from "@tanstack/react-table"
 import { Checkbox } from "@/components/ui/checkbox"
 
 export type Data = {
   id: string
   email: string
-  ctoName:string
-  companyName:string
-  Template:string
+  ctoName: string
+  companyName: string
+  Template: string
 }
 
 export const columns: ColumnDef<Data>[] = [
@@ -20,7 +21,7 @@ export const columns: ColumnDef<Data>[] = [
           (table.getIsSomePageRowsSelected() && "indeterminate")
         }
         onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
+        aria-label="Select all rows"
       />
     ),
     cell: ({ row }) => (
@@ -35,7 +36,7 @@ export const columns: ColumnDef<Data>[] = [
   },
   {
     accessorKey: "ctoName",
-    header: "Name",
+    header: "CTO Name",
   },
   {
     accessorKey: "companyName",
@@ -43,10 +44,6 @@ export const columns: ColumnDef<Data>[] = [
   },
   {
     accessorKey: "email",
-    header: "Email",
-  },
-  {
-    accessorKey: "Template",
-    header: "Template",
+    header: "Email Address",
   },
 ]
