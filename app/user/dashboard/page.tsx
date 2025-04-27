@@ -41,7 +41,7 @@ export default function DemoPage() {
         <p className="text-4xl font-bold text-black mt-2">{sent}</p>
       </div>
 
-      <div className="overflow-x-auto">
+      <div className="">
         <DataTable columns={columns} data={data} />
       </div>
     </div>

@@ -24,16 +24,6 @@ import {
       href: "/user/templates"
     },
     {
-      title: "Remaining Hits",
-      icon: Inbox,
-      href: "/user/hits"
-    },
-    {
-      title: "Refer a Friend",
-      icon: Users,
-      href: "/user/referal"
-    },
-    {
       title: "Profile",
       icon: User,
       href: "/user/profile"
@@ -102,7 +92,7 @@ import {
                         className={`flex items-center px-4 py-3 rounded-lg transition-all duration-300 group ${
                           isActive 
                             ? 'bg-gray-600/20 font-bold text-white border-l-2 border-white' 
-                            : 'text-gray-300 hover:bg-gray-800/20 hover:border-l-2 hover:border-white hover:text-white'
+                            : 'text-gray-300 hover:bg-gray-800/20 hover:border-white hover:text-white'
                         }`}
                       >
                         <item.icon className={`h-5 w-5 mr-3 transition-colors duration-300 ${
