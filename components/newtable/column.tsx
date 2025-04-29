@@ -36,7 +36,7 @@ export const columns: ColumnDef<Data>[] = [
   },
   {
     accessorKey: "ctoName",
-    header: "CTO Name",
+    header: "Founder's Name",
   },
   {
     accessorKey: "companyName",
@@ -45,5 +45,9 @@ export const columns: ColumnDef<Data>[] = [
   {
     accessorKey: "email",
     header: "Email Address",
+  },
+  {
+    accessorKey: "Template",
+    header: "Template",
   },
 ]
