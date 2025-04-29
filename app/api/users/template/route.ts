@@ -75,7 +75,7 @@ export async function GET(req: NextRequest) {
           userId: user.id,
         }
       });
-
+      // console.log("hienfaknefa",finder)
       return NextResponse.json(finder);
     } else {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
