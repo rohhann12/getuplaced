@@ -3,52 +3,52 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 model Founder {
-  id          String               @id @default(uuid())
-  email       String               @unique
-  companyName String               @unique
-  ctoName     String               @unique
-  domain      String?
-  users       User[]
+  id           String              @id @default(uuid())
+  email        String              @unique
+  companyName  String              @unique
+  ctoName      String              @unique
+  domain       String?
+  users        User[]
   userStatuses UserFounderStatus[] @relation("FounderToStatus")
 }
 
 model User {
-  id               String               @id @default(uuid())
+  id               String              @id @default(uuid())
   name             String
-  email            String               @unique
-  hits             Int?                 @default(2)
+  email            String              @unique
+  hits             Int?                @default(2)
   founderId        String?
-  gmailAppPassword String?              @unique
-  referalCode      Int?                 @unique
-  founder          Founder?             @relation(fields: [founderId], references: [id])
+  gmailAppPassword String?             @unique
+  referalCode      Int?                @unique
+  sentEmail        Int                 @default(0)
+  founder          Founder?            @relation(fields: [founderId], references: [id])
+  userStatuses     UserFounderStatus[] @relation("UserToStatus")
   template         template[]
-  userStatuses     UserFounderStatus[]  @relation("UserToStatus")
-  sentEmail        Int                  @default(0)
 }
 
 model template {
-  id        String   @id 
-  name      String?
-  template  String?
-  subject   String?
-  userId    String
-  user      User     @relation(fields: [userId], references: [id])
+  id       String  @id
+  template String?
+  subject  String?
+  userId   String
+  name     String?
+  user     User    @relation(fields: [userId], references: [id])
 }
 
-
 model UserFounderStatus {
-  id         String   @id @default(uuid())
-  userId     String
-  founderId  String
-  isSent     Boolean  @default(false)
-  user       User     @relation("UserToStatus", fields: [userId], references: [id])
-  founder    Founder  @relation("FounderToStatus", fields: [founderId], references: [id])
+  id        String  @id @default(uuid())
+  userId    String
+  founderId String
+  isSent    Boolean @default(false)
+  founder   Founder @relation("FounderToStatus", fields: [founderId], references: [id])
+  user      User    @relation("UserToStatus", fields: [userId], references: [id])
 
-  @@unique([userId, founderId])  
-  @@map("sent")                  
+  @@unique([userId, founderId])
+  @@map("sent")
 }
