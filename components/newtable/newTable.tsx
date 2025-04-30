@@ -64,7 +64,7 @@ export function DataTable<TData extends Identifiable, TValue>({
   useEffect(() => {
     const templateFetcher = async () => {
       try {
-        const request = await axios.get("http://localhost:3000/api/users/template");
+        const request = await axios.get("/api/users/template");
         setTemplate(request.data);
       } catch (error) {
         toast.error("Failed to fetch Data");
@@ -90,14 +90,14 @@ export function DataTable<TData extends Identifiable, TValue>({
     });
 
     try {
-      const passwordChecker = await axios.get("http://localhost:3000/api/users/gmailPassChecker");
+      const passwordChecker = await axios.get("/api/users/gmailPassChecker");
       if (!passwordChecker.data.success) {
         toast.error("No Gmail app password. Redirecting to settings...");
         navigate.push("/user/profile");
         return;
       }
 
-      const response = await axios.post("http://localhost:3000/api/users/emails/sender", selectedData);
+      const response = await axios.post("/api/users/emails/sender", selectedData);
       if (response.status === 200) {
         toast.success("Emails sent successfully");
       } else {

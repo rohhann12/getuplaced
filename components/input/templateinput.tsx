@@ -6,8 +6,8 @@ import { Button } from "../ui/button";
 import { Label } from "@radix-ui/react-label";
 import { useRouter } from "next/navigation";
 import { v4 as uuidv4 } from "uuid";
-import { Loader2 } from "lucide-react"; // Spinner icon
-
+import { Loader2 } from "lucide-react";
+import { toast, Toaster } from "sonner"; 
 interface TemplateData {
   id: string;
   name: string;
@@ -19,44 +19,44 @@ interface TemplateData {
 export default function TemplateInput() {
   const router = useRouter();
   const [templates, setTemplates] = useState<TemplateData[]>([]);
-  const [isFormOpen, setIsFormOpen] = useState(false);
-  const [loading, setLoading] = useState(false); // Loading state
-
+  const [loading, setLoading] = useState(false);
   const [initialLoading, setInitialLoading] = useState(true);
 
-useEffect(() => {
-  const fetchTemplates = async () => {
-    try {
-      const res = await axios.get("http://localhost:3000/api/users/template");
-      setTemplates(res.data || []);
-    } catch (error) {
-      console.error("Error fetching templates", error);
-    } finally {
-      setInitialLoading(false); // ✅ Mark loading complete
-    }
-  };
+  useEffect(() => {
+    const fetchTemplates = async () => {
+      try {
+        const res = await axios.get("/api/users/template");
+        setTemplates(res.data || []);
+      } catch (error) {
+        console.error("Error fetching templates", error);
+        toast.error("Failed to load templates.");
+      } finally {
+        setInitialLoading(false);
+      }
+    };
 
-  fetchTemplates();
-}, []);
-if (initialLoading) {
-  return (
-    <div className="flex justify-center items-center h-screen">
-      <Loader2 className="animate-spin h-10 w-10 text-gray-700" />
-      <span className="ml-4 text-lg text-gray-600">Loading templates...</span>
-    </div>
-  );
-}
+    fetchTemplates();
+  }, []);
+
+  if (initialLoading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <Loader2 className="h-10 w-10 animate-spin text-gray-700" />
+        <span className="ml-4 text-lg text-gray-600">Loading templates...</span>
+      </div>
+    );
+  }
 
   async function handleNew() {
     setLoading(true);
     const id = uuidv4();
     try {
-      await axios.post("http://localhost:3000/api/users/template", {
-        id: id,
-      });
+      await axios.post("/api/users/template", { id: id });
+      toast.success("New template created successfully!");
       router.push(`/user/templates/${id}`);
     } catch (error) {
       console.error("Error creating new template", error);
+      toast.error("Failed to create template.");
     } finally {
       setLoading(false);
     }
@@ -64,15 +64,17 @@ if (initialLoading) {
 
   return (
     <div className="p-6">
+      <Toaster position="top-right" richColors />
+
       <div className="rounded-xl p-4 flex flex-col justify-center text-black">
         <Button
           onClick={handleNew}
-          className="flex flex-col bg-white p-20 w-8 text-black text-xl font-extrabold hover:bg-gray-400"
+          className="flex flex-col items-center bg-white p-20 w-8 text-black text-xl font-extrabold hover:bg-gray-400"
           disabled={loading}
         >
           {loading ? (
             <>
-              <Loader2 className="animate-spin h-6 w-6 mb-2" />
+              <Loader2 className="mb-2" />
               <Label>Creating...</Label>
             </>
           ) : (
@@ -94,8 +96,9 @@ if (initialLoading) {
           <table className="min-w-full border border-gray-300">
             <thead className="bg-gray-200">
               <tr>
+                <th className="px-6 py-3 text-left text-sm font-medium text-black">Template Id</th>
                 <th className="px-6 py-3 text-left text-sm font-medium text-black">Template Name</th>
-                <th className="px-6 py-3 text-left text-sm font-medium text-black">Template ID</th>
+                <th className="px-6 py-3 text-left text-sm font-medium text-black">Template subject</th>
               </tr>
             </thead>
             <tbody>
@@ -105,8 +108,9 @@ if (initialLoading) {
                   className="border-t border-gray-300 cursor-pointer"
                   onClick={() => router.push(`/user/templates/${template.id}`)}
                 >
-                  <td className="px-6 py-4 text-sm text-white">{template.name}</td>
                   <td className="px-6 py-4 text-sm text-white">{template.id}</td>
+                  <td className="px-6 py-4 text-sm text-white">{template.name}</td>
+                  <td className="px-6 py-4 text-sm text-white">{template.subject}</td>
                 </tr>
               ))}
             </tbody>
