@@ -3,6 +3,28 @@ import GoogleProvider from "next-auth/providers/google";
 import { JWT } from "next-auth/jwt";
 import prisma from "../../../utils/db";
 
+async function initializeUserStatus(userId: string) {
+  const founders = await prisma.founder.findMany();
+
+  await Promise.all(
+    founders.map((founder) =>
+      prisma.userFounderStatus.upsert({
+        where: {
+          userId_founderId: {
+            userId,
+            founderId: founder.id,
+          },
+        },
+        update: {},
+        create: {
+          userId,
+          founderId: founder.id,
+          isSent: false,
+        },
+      })
+    )
+  );
+}
 async function lol(googleUser: any) {
   const { email, name } = googleUser;
 
@@ -23,7 +45,6 @@ async function lol(googleUser: any) {
 
   return newUser;
 }
-
 interface ExtendedToken extends JWT {
   accessToken?: string;
   refreshToken?: string;
@@ -57,16 +78,19 @@ const authOptions = NextAuth({
 
       return token as ExtendedToken;
     },
+    
     async session({ session, token }) {
       session.accessToken = (token as ExtendedToken).accessToken;
       return session;
     },
+
     async signIn({ user }) {
-      await lol({
-        email: user.email,
-        name: user.name,
-      });
-      return true;
+      const dbUser = await lol(user);
+      if (dbUser) {
+        await initializeUserStatus(dbUser.id);
+        return true;
+      }
+      return false;
     },
   },
   pages: {
