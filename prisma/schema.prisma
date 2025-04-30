@@ -22,6 +22,7 @@ model User {
   id               String              @id @default(uuid())
   name             String
   email            String              @unique
+  // hasVisited       Boolean  @default(false)
   hits             Int?                @default(2)
   founderId        String?
   gmailAppPassword String?             @unique

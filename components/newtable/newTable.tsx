@@ -67,7 +67,7 @@ export function DataTable<TData extends Identifiable, TValue>({
         const request = await axios.get("http://localhost:3000/api/users/template");
         setTemplate(request.data);
       } catch (error) {
-        toast.error("Failed to fetch templates");
+        toast.error("Failed to fetch Data");
       } finally {
         setLoading(false); // Done loading
       }
