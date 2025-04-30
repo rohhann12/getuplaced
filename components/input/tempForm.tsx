@@ -4,17 +4,40 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
-import { useRouter } from "next/navigation"; 
+import { useRouter, useParams } from "next/navigation";
 
-export default function TemplateForm({}) {
+export default function TemplateForm() {
   const router = useRouter();
+  const params = useParams(); // gets params from the dynamic route
+  const templateId = params?.id as string;
+
   const [templateData, setTemplateData] = useState({
     templateName: "",
     subject: "",
     body: "",
   });
+
+  useEffect(() => {
+    const fetchTemplate = async () => {
+      if (!templateId) return;
+
+      try {
+        const response = await axios.get(`/api/users/template/${templateId}`);
+        const { name, subject, template } = response.data.data;
+        setTemplateData({
+          templateName: name,
+          subject: subject,
+          body: template,
+        });
+      } catch (error) {
+        console.error("Failed to fetch template", error);
+      }
+    };
+
+    fetchTemplate();
+  }, [templateId]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setTemplateData({
@@ -29,19 +52,18 @@ export default function TemplateForm({}) {
 
   const handleSubmit = async () => {
     try {
-      await axios.post("/api/users/template/update", templateData);
-      router.push("/user/templates"); // redirect after submit
+      await axios.post("/api/users/template/update", { id: templateId, ...templateData });
+      router.push("/user/templates");
     } catch (error) {
       console.error("Error submitting template", error);
     }
   };
 
-
   return (
     <div className="flex justify-center items-center min-h-[30vw]">
       <div className="max-w-md w-full bg-white text-black p-4 border rounded-lg shadow-md">
         <div className="mb-3">
-          <h2 className="text-2xl font-bold text-center">Add New Template</h2>
+          <h2 className="text-2xl font-bold text-center">Edit Template</h2>
         </div>
         <div className="grid gap-4">
           <div className="space-y-2">

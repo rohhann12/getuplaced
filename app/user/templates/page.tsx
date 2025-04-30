@@ -4,7 +4,7 @@ import TemplateInput from "@/components/input/templateinput";
 
 export default function TemplatesPage() {
   return (
-    <div className="">
+    <div>
       <TemplateInput />
     </div>
   );

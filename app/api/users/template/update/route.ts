@@ -11,8 +11,9 @@ export async function POST(req: NextRequest) {
 
   try {
     const body = await req.json();
+    console.log("body is",body)
     const createdTemplate = await prisma.template.update({
-      where: {id:body},   
+      where: {id:body.id},   
       data: {
         name: body.templateName,
         subject: body.subject,
