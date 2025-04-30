@@ -66,8 +66,11 @@ export function DataTable<TData extends Identifiable, TValue>({
       try {
         const request = await axios.get("/api/users/template");
         setTemplate(request.data);
+        if(!request){
+          toast.message("not able to fetch data")
+        }
       } catch (error) {
-        toast.error("Failed to fetch Data");
+        console.log(error)
       } finally {
         setLoading(false); // Done loading
       }

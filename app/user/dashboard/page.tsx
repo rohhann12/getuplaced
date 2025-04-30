@@ -12,7 +12,7 @@ export default function DemoPage() {
   useEffect(() => {
     async function fetcher() {
       try {
-        const response = await axios.get("http://localhost:3000/api/users/emails/finder")
+        const response = await axios.get("/api/users/emails/finder")
         setData(response.data.data.data)
       } catch (err) {
         console.error("Error fetching data", err)
@@ -21,7 +21,7 @@ export default function DemoPage() {
 
     async function emailSender() {
       try {
-        const emailNumber = await axios.get("http://localhost:3000/api/users/dashboard")
+        const emailNumber = await axios.get("/api/users/dashboard")
         setSend(emailNumber.data.message.sentEmail) 
         console.log(emailNumber.data)
       } catch (error) {
