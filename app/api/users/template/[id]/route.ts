@@ -1,20 +1,22 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getToken } from "next-auth/jwt";
-import prisma from "../../../../utils/db"; // note path depending on your structure
+import prisma from "../../../../utils/db";
 
-export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
+// Use 'context' instead of direct destructuring for clarity
+export async function GET(
+    req: NextRequest,
+    { params }: { params: Promise<{ id: string }> }
+  ) {
+     const id = (await params).id; 
   const token = await getToken({ req });
 
   if (!token?.email) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
-
-  const { id } = params;
-
   try {
     const dataFetched = await prisma.template.findUnique({
       where: {
-        id: id,
+        id,
       },
       select: {
         subject: true,
@@ -24,9 +26,7 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
     });
 
     if (dataFetched) {
-      return NextResponse.json({
-        data: dataFetched,
-      });
+      return NextResponse.json({ data: dataFetched });
     } else {
       return NextResponse.json({ error: "Template not found" }, { status: 404 });
     }
