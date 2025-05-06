@@ -37,17 +37,17 @@ export async function POST(req: NextRequest): Promise<any> {
 
     for (const entry of data) {
       const { email: recipientEmail, templateId } = entry
-
+    
       const template = await prisma.template.findUnique({
         where: { id: templateId },
         select: { subject: true, template: true },
       })
-
+    
       if (!template) {
         console.log(`Template not found for ID: ${templateId}`)
         continue
       }
-
+    
       try {
         await transporter.sendMail({
           from: email,
@@ -55,11 +55,37 @@ export async function POST(req: NextRequest): Promise<any> {
           subject: template.subject || "",
           text: template.template || "",
         })
+    
+        const recipientUser = await prisma.user.findUnique({
+          where: { email },
+          select: { id: true }
+        })
+    
+        const founder = await prisma.founder.findUnique({
+          where: { email : recipientEmail},
+          select: { id: true }
+        })
+    
+        if (recipientUser && founder) {
+          await prisma.userFounderStatus.update({
+            where: {
+              userId_founderId: {
+                userId: recipientUser.id,
+                founderId: founder.id
+              }
+            },
+            data: {
+              isSent: true
+            }
+          })
+        }
+    
         sentCount++
       } catch (err) {
         console.error(`Failed to send email to ${recipientEmail}:`, err)
       }
     }
+    
 
     await prisma.user.update({
       where: { email },
@@ -69,6 +95,7 @@ export async function POST(req: NextRequest): Promise<any> {
         },
       },
     })
+    
     if (sentCount === 0) {
       return NextResponse.json({
         success: false,
