@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from "next/server"
 import { Email } from "@/app/utils/emailFinder"
 import prisma from "@/app/utils/db"
 import axios from "axios"
-import { tableCreator } from "../../tableCreator/route"
+import { tableCreator } from "../../../../utils/tableCreator"
 
 
 export async function GET(req: NextRequest) {
