@@ -33,7 +33,3 @@ export async function GET(req: NextRequest) {
       }, { status: 500 })
     }
 }
-
-export async function POST(){
-    // used to trigger another backend request which will call the nodemailer
-}

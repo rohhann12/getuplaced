@@ -8,7 +8,7 @@ import {
   } from "@/components/ui/sidebar"
   import { signOut, useSession } from "next-auth/react";
   import Link from "next/link";
-  import { Home, Inbox, Mails, Users, LogOut, Menu, Settings, User } from "lucide-react";
+  import { Home, Inbox, Mails, Users, LogOut, Menu, Settings, User, Video } from "lucide-react";
   import { usePathname } from "next/navigation";
   import { useState, useEffect } from "react";
   
@@ -27,6 +27,10 @@ import {
       title: "Profile",
       icon: User,
       href: "/user/profile"
+    },{
+      title: "Demo",
+      icon: Video,
+      href: "/user/demo"
     }
   ];
   
