@@ -17,7 +17,7 @@ export async function Email(arr: any[],userID:string) {
           },
         },
       },
-      take:8
+      take:5
     });
   
     if (unsent.length === 0) {

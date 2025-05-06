@@ -92,6 +92,7 @@ export function DataTable<TData extends Identifiable, TValue>({
       };
     });
 
+    console.log(selectedData)
     try {
       const { data: passwordChecker } = await axios.get("/api/users/gmailPassChecker");
 
@@ -100,7 +101,6 @@ export function DataTable<TData extends Identifiable, TValue>({
         navigate.push("/user/profile");
         return;
       }
-
       const response = await axios.post("/api/users/emails/sender", selectedData);
 
       if (response.status === 200) {
