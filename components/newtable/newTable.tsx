@@ -72,7 +72,9 @@ export function DataTable<TData extends Identifiable, TValue>({
       } catch (error) {
         console.log(error)
       } finally {
-        setLoading(false); // Done loading
+        setTimeout(()=>{
+          setLoading(false); // Done loading
+        },3000)
       }
     };
     templateFetcher();
@@ -101,6 +103,7 @@ export function DataTable<TData extends Identifiable, TValue>({
       }
 
       const response = await axios.post("/api/users/emails/sender", selectedData);
+      // console.log(response)
       if (response.status === 200) {
         toast.success("Emails sent successfully");
       } else {
@@ -118,7 +121,7 @@ export function DataTable<TData extends Identifiable, TValue>({
     <div className="rounded-md border p-4 font-bold">
       {loading ? (
         <div className="flex justify-center items-center p-10">
-          <Loader2 className="h-10 w-10 animate-spin text-blue-500" />
+          <Loader2 className="h-10 w-10 animate-spin text-grey-500" />
           <span className="ml-4 text-lg">Loading Data...</span>
         </div>
       ) : (
