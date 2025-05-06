@@ -80,7 +80,7 @@ import {
           <Sidebar className="h-full">
             <SidebarHeader className="p-4 border-b bg-black border-gray-800">
               <div className="text-xl font-bold text-white">
-                {session?.user?.name ? `Welcome, ${session.user.name.split(" ")[0]}!` : "Welcome, User!"}
+                {session?.user?.name ? `wagmi, ${session.user.name.split(" ")[0]}!` : "Welcome, User!"}
               </div>
             </SidebarHeader>
             
