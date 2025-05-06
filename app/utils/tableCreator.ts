@@ -35,11 +35,10 @@ export async function tableCreator(req: any) {
   }));
 
   try {
-    await prisma.userFounderStatus.createMany({
+    const table=await prisma.userFounderStatus.createMany({
       data: dataToInsert,
-      skipDuplicates: true, // Prevent error if record already exists
+      skipDuplicates: true,
     });
-
     return { success: true, message: "User status initialized" };
   } catch (e) {
     console.error("Error initializing user status:", e);

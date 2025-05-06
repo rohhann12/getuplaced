@@ -69,8 +69,18 @@ export async function POST(req: NextRequest): Promise<any> {
         },
       },
     })
-
-    return NextResponse.json({ message: `Emails sent: ${sentCount}` }, { status: 200 })
+    if (sentCount === 0) {
+      return NextResponse.json({
+        success: false,
+        errorCode: 535,
+        message: "Gmail authentication failed or emails could not be sent",
+      }, { status: 535 }) // status 200 so frontend handles it in `.data`
+    }
+    
+    return NextResponse.json({
+      success: true,
+      message: `Emails sent: ${sentCount}`
+    }, { status: 200 })
   } catch (error) {
     console.error("Error in sending emails:", error)
     return NextResponse.json({ message: "Internal server error" }, { status: 500 })

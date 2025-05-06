@@ -14,7 +14,6 @@ export async function GET(req:NextRequest):Promise<any>{
                     gmailAppPassword:true
                 }
             })
-            console.log("skfnsknmfs",finder.length)
             if(finder.length===0 || finder[0].gmailAppPassword===null){
                 console.log("finder",finder)
                 return NextResponse.json({success:false})

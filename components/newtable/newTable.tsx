@@ -30,12 +30,14 @@ interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
 }
+
 interface TemplateProp {
   id: string;
   name: string;
   subject: string;
   template: string;
 }
+
 interface Identifiable {
   id: string;
   email: string;
@@ -45,10 +47,10 @@ export function DataTable<TData extends Identifiable, TValue>({
   columns,
   data,
 }: DataTableProps<TData, TValue>) {
-  const [templates, setTemplate] = useState<TemplateProp[]>([]);
-  const [loading, setLoading] = useState<boolean>(true); // Loading state
+  const [templates, setTemplates] = useState<TemplateProp[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
   const navigate = useRouter();
-  const [rowSelection, setRowSelection] = React.useState({});
+  const [rowSelection, setRowSelection] = useState({});
   const [selectedTemplateIds, setSelectedTemplateIds] = useState<Record<string, string>>({});
 
   const table = useReactTable({
@@ -56,31 +58,27 @@ export function DataTable<TData extends Identifiable, TValue>({
     columns,
     getCoreRowModel: getCoreRowModel(),
     onRowSelectionChange: setRowSelection,
-    state: {
-      rowSelection,
-    },
+    state: { rowSelection },
   });
 
   useEffect(() => {
-    const templateFetcher = async () => {
+    const fetchTemplates = async () => {
       try {
-        const request = await axios.get("/api/users/template");
-        setTemplate(request.data);
-        if(!request){
-          toast.message("not able to fetch data")
-        }
+        const response = await axios.get("/api/users/template");
+        setTemplates(response.data);
       } catch (error) {
-        console.log(error)
+        console.error("Error fetching templates:", error);
+        toast.error("Failed to fetch templates.");
       } finally {
-        setTimeout(()=>{
-          setLoading(false); // Done loading
-        },3000)
+        setLoading(false);
       }
     };
-    templateFetcher();
+    fetchTemplates();
   }, []);
 
-  async function emailSender() {
+  const emailSender = async () => {
+    const toastId = toast.loading("Sending emails...");
+
     const selectedRows = table.getSelectedRowModel().rows;
     const selectedData = selectedRows.map((row) => {
       const original = row.original;
@@ -95,25 +93,34 @@ export function DataTable<TData extends Identifiable, TValue>({
     });
 
     try {
-      const passwordChecker = await axios.get("/api/users/gmailPassChecker");
-      if (!passwordChecker.data.success) {
+      const { data: passwordChecker } = await axios.get("/api/users/gmailPassChecker");
+
+      if (!passwordChecker.success) {
         toast.error("No Gmail app password. Redirecting to settings...");
         navigate.push("/user/profile");
         return;
       }
 
       const response = await axios.post("/api/users/emails/sender", selectedData);
-      // console.log(response)
+
       if (response.status === 200) {
         toast.success("Emails sent successfully");
       } else {
-        toast.error("Failed to send some or all emails");
+        toast.error(`Unexpected response: ${response.status}`);
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error during email sending:", error);
-      toast.error("An error occurred while sending emails");
+      if (error.response?.status === 535) {
+        toast.error("Incorrect Gmail App Password. Check the demo for help.");
+      } else if (error.response?.status === 400) {
+        toast.error("Bad request. Please check the data you're sending.");
+      } else {
+        toast.error("An unexpected error occurred while sending emails.");
+      }
+    } finally {
+      toast.dismiss(toastId);
     }
-  }
+  };
 
   const selectedRows = table.getSelectedRowModel().rows;
 
@@ -134,10 +141,7 @@ export function DataTable<TData extends Identifiable, TValue>({
                     <TableHead key={header.id} className="text-white">
                       {header.isPlaceholder
                         ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
+                        : flexRender(header.column.columnDef.header, header.getContext())}
                     </TableHead>
                   ))}
                 </TableRow>
@@ -156,30 +160,29 @@ export function DataTable<TData extends Identifiable, TValue>({
                         {flexRender(cell.column.columnDef.cell, cell.getContext())}
                       </TableCell>
                     ))}
-                      <TableCell>
-                        <Select
-                          value={selectedTemplateIds[row.original.id] || ""}
-                          onValueChange={(value) => {
-                            setSelectedTemplateIds((prev) => ({
-                              ...prev,
-                              [row.original.id]: value,
-                            }));
-                          }}
-                          disabled={!row.getIsSelected()} // Disable if not selected
-                        >
-                          <SelectTrigger className="w-[180px]">
-                            <SelectValue placeholder="Choose Template" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {templates.map((template) => (
-                              <SelectItem key={template.id} value={template.id}>
-                                {template.name}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </TableCell>
-
+                    <TableCell>
+                      <Select
+                        value={selectedTemplateIds[row.original.id] || ""}
+                        onValueChange={(value) => {
+                          setSelectedTemplateIds((prev) => ({
+                            ...prev,
+                            [row.original.id]: value,
+                          }));
+                        }}
+                        disabled={!row.getIsSelected()}
+                      >
+                        <SelectTrigger className="w-[180px]">
+                          <SelectValue placeholder="Choose Template" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {templates.map((template) => (
+                            <SelectItem key={template.id} value={template.id}>
+                              {template.name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </TableCell>
                   </TableRow>
                 ))
               ) : (
@@ -193,10 +196,7 @@ export function DataTable<TData extends Identifiable, TValue>({
           </Table>
 
           <div className="mt-4 flex justify-center">
-            <Button
-              disabled={selectedRows.length === 0}
-              onClick={emailSender}
-            >
+            <Button disabled={selectedRows.length === 0} onClick={emailSender}>
               Send Email
             </Button>
           </div>
