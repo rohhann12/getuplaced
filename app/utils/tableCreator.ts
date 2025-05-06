@@ -1,7 +1,7 @@
 import prisma from "@/app/utils/db";
 
-export async function tableCreator(req:any) {
-  const token = req
+export async function tableCreator(req: any) {
+  const token = req;
 
   if (!token?.email) {
     return { success: false, message: "Unauthorized" };
@@ -28,25 +28,17 @@ export async function tableCreator(req:any) {
 
   const founders = await prisma.founder.findMany({ select: { id: true } });
 
+  const dataToInsert = founders.map((founder) => ({
+    userId: user.id,
+    founderId: founder.id,
+    isSent: false,
+  }));
+
   try {
-    await Promise.all(
-      founders.map((founder) =>
-        prisma.userFounderStatus.upsert({
-          where: {
-            userId_founderId: {
-              userId: user.id,
-              founderId: founder.id,
-            },
-          },
-          update: {},
-          create: {
-            userId: user.id,
-            founderId: founder.id,
-            isSent: false,
-          },
-        })
-      )
-    );
+    await prisma.userFounderStatus.createMany({
+      data: dataToInsert,
+      skipDuplicates: true, // Prevent error if record already exists
+    });
 
     return { success: true, message: "User status initialized" };
   } catch (e) {
