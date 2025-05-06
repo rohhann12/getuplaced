@@ -17,14 +17,12 @@ export async function Email(arr: any[],userID:string) {
           },
         },
       },
-      take:5
+      take:8
     });
   
     if (unsent.length === 0) {
       return "you are doing good, but come back later for more emails";
     }
-  
-    // const randomTen = unsent(unsent);
     const emails = unsent.map((e: any) => e.founder);
     return emails;
   });

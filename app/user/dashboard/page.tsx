@@ -13,7 +13,8 @@ export default function DemoPage() {
     async function fetcher() {
       try {
         const response = await axios.get("/api/users/emails/finder")
-        setData(response.data.data.data)
+        console.log(response)
+        setData(response.data.data)
       } catch (err) {
         console.error("Error fetching data", err)
       }

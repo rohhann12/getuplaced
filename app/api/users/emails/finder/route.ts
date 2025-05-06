@@ -26,9 +26,7 @@ export async function GET(req: NextRequest) {
 
         // Wait for both in parallel
         const [founders, _] = await Promise.all([founderPromise, createTablePromise]);
-
         const data = await Email(founders, user.id);
-
         return NextResponse.json({ data });
     } catch (error) {
         console.error("API Error:", error);
