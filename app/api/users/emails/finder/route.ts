@@ -34,7 +34,7 @@ export async function GET(req: NextRequest) {
             
             // console.log(founders) // This is your array of founders
             const data = await Email(founders, id.id)
-            console.log(data)
+            // console.log(data)
             return NextResponse.json({
                 data: { data }
             })
@@ -46,7 +46,6 @@ export async function GET(req: NextRequest) {
         }, { status: 500 })
     }
     
-    // Add default response if token doesn't exist
     return NextResponse.json({
         message: "Unauthorized"
     }, { status: 401 })

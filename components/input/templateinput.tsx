@@ -64,18 +64,15 @@ export default function TemplateInput() {
 
   return (
     <div className="p-6">
-      <Toaster position="top-right" richColors />
-
       <div className="rounded-xl p-4 flex flex-col justify-center text-black">
-        <Button
+      <Button
           onClick={handleNew}
           className="flex flex-col items-center bg-white p-20 w-8 text-black text-xl font-extrabold hover:bg-gray-400"
           disabled={loading}
         >
           {loading ? (
             <>
-              <Loader2 className="mb-2" />
-              <Label>Creating...</Label>
+              <Loader2 className="h-6 w-6 animate-spin mb-2" />
             </>
           ) : (
             <>
@@ -86,7 +83,6 @@ export default function TemplateInput() {
         </Button>
       </div>
 
-      {/* Table Section */}
       <div className="mt-10 overflow-x-auto rounded-md">
         {templates.length === 0 ? (
           <div className="text-center text-gray-500 text-xl mt-10">

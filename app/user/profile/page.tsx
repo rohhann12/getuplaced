@@ -54,6 +54,8 @@ export default function AppPasswordAndSender() {
         <div className="flex flex-col items-center text-center gap-4">
           <h1 className="text-4xl font-extrabold mb-2">Instructions</h1>
           <h2 className="text-xl">1. Use the same Gmail ID to generate the App Password</h2>
+          <h2 className="text-xl">2. I am hashing the password so dw</h2>
+          <h2 className="text-xl font-extrabold bg-white text-black p-4 rounded-xl">WAGMI</h2>
         </div>
 
         <div className="flex flex-col items-center justify-center bg-[#111] rounded-2xl p-8 w-full max-w-md gap-6">
