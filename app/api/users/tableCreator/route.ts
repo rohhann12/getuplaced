@@ -30,24 +30,29 @@ export async function POST(req: NextRequest) {
 
   const founders = await prisma.founder.findMany({ select: { id: true } });
 
-  await Promise.all(
-    founders.map((founder) =>
-      prisma.userFounderStatus.upsert({
-        where: {
-          userId_founderId: {
-            userId: user.id,
-            founderId: founder.id,
-          },
-        },
-        update: {},
-        create: {
-          userId: user.id,
-          founderId: founder.id,
-          isSent: false,
-        },
-      })
-    )
-  );
-
-  return NextResponse.json({ message: "User status initialized" });
+  try{
+    await Promise.all(
+        founders.map((founder) =>
+          prisma.userFounderStatus.upsert({
+            where: {
+              userId_founderId: {
+                userId: user.id,
+                founderId: founder.id,
+              },
+            },
+            update: {},
+            create: {
+              userId: user.id,
+              founderId: founder.id,
+              isSent: false,
+            },
+          })
+        )
+      );
+    
+      return NextResponse.json({ message: "User status initialized",success:true });
+  }catch(e){
+    console.log(e)
+    return NextResponse.json({ message: "User status initialized",success:false });
+  }
 }

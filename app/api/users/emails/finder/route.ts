@@ -9,6 +9,7 @@ export  async function GET(req:NextRequest){
     try {
         const founder=await prisma.founder.findMany()
         const data=await Email(founder)
+        console.log("api hit",data)
         return NextResponse.json({
             data:{data}
         })
