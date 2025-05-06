@@ -2,9 +2,8 @@ import prisma from "@/app/utils/db";
 import { getToken } from "next-auth/jwt";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function POST(req: NextRequest) {
-  const token = await getToken({ req });
-
+export async function tableCreator(req:any) {
+  const token = req
   if (!token?.email) {
     return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
   }
