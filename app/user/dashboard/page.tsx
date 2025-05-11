@@ -6,20 +6,9 @@ import { columns } from "../../../components/newtable/column"
 import { DataTable } from "../../../components/newtable/newTable"
 
 export default function DemoPage() {
-  const [data, setData] = useState([])
   const [sent, setSend] = useState(0)
 
   useEffect(() => {
-    async function fetcher() {
-      try {
-        const response = await axios.get("/api/users/emails/finder")
-        console.log(response)
-        setData(response.data.data)
-      } catch (err) {
-        console.error("Error fetching data", err)
-      }
-    }
-
     async function emailSender() {
       try {
         const emailNumber = await axios.get("/api/users/dashboard")
@@ -30,7 +19,6 @@ export default function DemoPage() {
       }
     }
     emailSender()
-    fetcher()
   }, [])
 
   return (
@@ -43,7 +31,7 @@ export default function DemoPage() {
       </div>
 
       <div className="">
-        <DataTable columns={columns} data={data} />
+        <DataTable columns={columns}  />
       </div>
     </div>
   )
