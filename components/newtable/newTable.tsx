@@ -1,3 +1,5 @@
+'use client'
+
 import React, { useEffect, useState } from "react";
 import {
   ColumnDef,
@@ -24,11 +26,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Loader2 } from "lucide-react"; // Spinner icon
+import { Loader2 } from "lucide-react";
 
-interface DataTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[];
-  data: TData[];
+export interface Identifiable {
+  id: string;
+  email: string;
 }
 
 interface TemplateProp {
@@ -38,20 +40,20 @@ interface TemplateProp {
   template: string;
 }
 
-interface Identifiable {
-  id: string;
-  email: string;
+interface DataTableProps<TValue> {
+  columns: ColumnDef<TValue>[];
 }
 
-export function DataTable<TData extends Identifiable, TValue>({
+export function DataTable<TValue extends Identifiable>({
   columns,
-  data,
-}: DataTableProps<TData, TValue>) {
+}: DataTableProps<TValue>) {
   const [templates, setTemplates] = useState<TemplateProp[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const navigate = useRouter();
   const [rowSelection, setRowSelection] = useState({});
   const [selectedTemplateIds, setSelectedTemplateIds] = useState<Record<string, string>>({});
+
+  const [data, setData] = useState<TValue[]>([]);
 
   const table = useReactTable({
     data,
@@ -62,18 +64,25 @@ export function DataTable<TData extends Identifiable, TValue>({
   });
 
   useEffect(() => {
-    const fetchTemplates = async () => {
+    const fetchData = async () => {
       try {
-        const response = await axios.get("/api/users/template");
-        setTemplates(response.data);
+        const [templateRes, dataRes] = await Promise.all([
+          axios.get("/api/users/template"),
+          axios.get("/api/users/emails/finder"),
+        ]);
+
+        setTemplates(templateRes.data);
+
+        setData(dataRes.data.data); 
       } catch (error) {
-        console.error("Error fetching templates:", error);
-        toast.error("Failed to fetch templates.");
+        console.error("Error fetching data:", error);
+        toast.error("Error fetching templates or user data.");
       } finally {
         setLoading(false);
       }
     };
-    fetchTemplates();
+
+    fetchData();
   }, []);
 
   const emailSender = async () => {
@@ -92,7 +101,6 @@ export function DataTable<TData extends Identifiable, TValue>({
       };
     });
 
-    console.log(selectedData)
     try {
       const { data: passwordChecker } = await axios.get("/api/users/gmailPassChecker");
 
@@ -101,6 +109,7 @@ export function DataTable<TData extends Identifiable, TValue>({
         navigate.push("/user/profile");
         return;
       }
+
       const response = await axios.post("/api/users/emails/sender", selectedData);
 
       if (response.status === 200) {
