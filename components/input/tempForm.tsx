@@ -45,7 +45,9 @@ export default function TemplateForm() {
       [e.target.name]: e.target.value,
     });
   };
+  // const slideUp=()=>{
 
+  // }
   const handleBack = () => {
     router.push("/user/templates");
   };
@@ -60,8 +62,8 @@ export default function TemplateForm() {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-[30vw]">
-      <div className="max-w-md w-full bg-white text-black p-4 border rounded-lg shadow-md">
+    <div className="flex justify-center items-center min-h-[80vh]">
+      <div className="max-w-md w-full  text-white p-4 border rounded-lg shadow-md">
         <div className="mb-3">
           <h2 className="text-2xl font-bold text-center">Edit Template</h2>
         </div>
@@ -94,7 +96,7 @@ export default function TemplateForm() {
               value={templateData.body}
               onChange={handleChange}
               placeholder="Paste your template here..."
-              rows={3}
+              className="break-words whitespace-pre-wrap resize-y overflow-auto"
             />
           </div>
           <div className="flex justify-between">
@@ -103,6 +105,17 @@ export default function TemplateForm() {
           </div>
         </div>
       </div>
+     <div className="absolute bottom-4 right-10 ">
+      <Button
+      className="bg-white text-black hover:bg-grey-200 cursor-pointer"
+        onClick={() => {
+          console.log("Generate with AI clicked");
+        }}
+      >
+        Generate with AI
+      </Button>
+    </div>
+        
     </div>
   );
 }

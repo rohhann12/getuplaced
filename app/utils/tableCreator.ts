@@ -33,7 +33,6 @@ export async function tableCreator(req: any) {
     founderId: founder.id,
     isSent: false,
   }));
-
   try {
     const table=await prisma.userFounderStatus.createMany({
       data: dataToInsert,
