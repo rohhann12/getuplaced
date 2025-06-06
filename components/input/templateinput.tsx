@@ -68,11 +68,12 @@ export default function TemplateInput() {
       <Button
           onClick={handleNew}
           className="flex flex-col items-center bg-white p-20 w-8 text-black text-xl font-extrabold hover:bg-gray-400"
-          disabled={loading}
         >
           {loading ? (
             <>
-              <Loader2 className="h-6 w-6 animate-spin mb-2" />
+              <h1 className="" >
+              creating new...
+              </h1>
             </>
           ) : (
             <>
