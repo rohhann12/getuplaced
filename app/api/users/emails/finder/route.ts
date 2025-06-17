@@ -4,7 +4,7 @@ import { Email } from "@/app/utils/emailFinder"
 import prisma from "@/app/utils/db"
 import axios from "axios"
 import { tableCreator } from "../../../../utils/tableCreator"
-
+import { client, connectRedis } from "@/app/utils/redis";
 export async function GET(req: NextRequest) {
     const token = await getToken({ req });
     if (!token) {
@@ -15,19 +15,18 @@ export async function GET(req: NextRequest) {
         const user = await prisma.user.findUnique({
             where: { email: token.email || "" }
         });
-
         if (!user) {
             return NextResponse.json({ message: "User not found" }, { status: 404 });
         }
 
-        // Begin both async tasks in parallel
         const founderPromise = prisma.founder.findMany();
         const createTablePromise = tableCreator(token);
-
-        // Wait for both in parallel
-        const [founders, _] = await Promise.all([founderPromise, createTablePromise]);
+        const [founders, tableData] = await Promise.all([founderPromise, createTablePromise]);
         const data = await Email(founders, user.id);
-        return NextResponse.json({ data });
+        await connectRedis();
+        const setting = await client.set("data", JSON.stringify(tableData));
+        console.log(JSON.stringify(setting))
+        return NextResponse.json({ data, redisSet: setting });
     } catch (error) {
         console.error("API Error:", error);
         return NextResponse.json({ message: "Error occurred" }, { status: 500 });
