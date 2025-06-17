@@ -24,8 +24,7 @@ export async function GET(req: NextRequest) {
         const [founders, tableData] = await Promise.all([founderPromise, createTablePromise]);
         const data = await Email(founders, user.id);
         await connectRedis();
-        const setting = await client.set("data", JSON.stringify(tableData));
-        console.log(JSON.stringify(setting))
+        const setting = await client.set("data", JSON.stringify(data));
         return NextResponse.json({ data, redisSet: setting });
     } catch (error) {
         console.error("API Error:", error);

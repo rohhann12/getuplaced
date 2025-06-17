@@ -1,13 +1,21 @@
 import { createClient } from "redis";
 
-const client = await createClient({
-    url:"rediss://default:ASp0AAIjcDFiM2RiZWZmODQxNTM0MGNkOGM4ZTI0MWY1ODE1ZmY3ZnAxMA@skilled-primate-10868.upstash.io:6379"
-}).on("error", (err) => console.log("Redis Client Error", err)).connect();
+const client = createClient({
+  socket: {
+    host: "better-coral-36704.upstash.io",
+    port: 6379,
+    tls: true,
+  },
+  password: "AY9gAAIjcDEyMzE4MmU0MjkxMjc0OWM2Yjg2Mjk2NWQ2YTRjZWYwY3AxMA", // from Upstash
+  username: "default",
+});
+
+client.on("error", (err:any) => console.error("Redis Client Error", err));
 
 async function connectRedis() {
-    if (!client.isOpen) {
-        await client.connect();
-    }
+  if (!client.isOpen) {
+    await client.connect();
+  }
 }
 
-export {client,connectRedis}
+export { client, connectRedis };
