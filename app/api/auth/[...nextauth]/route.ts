@@ -4,24 +4,25 @@ import { JWT } from "next-auth/jwt";
 import prisma from "../../../utils/db";
 
 async function lol(googleUser: any) {
-  const { email, name } = googleUser;
+  try {
+    const { email, name } = googleUser;
+    if (!email) return null;
+    const existingUser = await prisma.user.findUnique({
+      where: { email },
+    });
+    if (existingUser) return existingUser;
+    const newUser = await prisma.user.create({
+      data: {
+        email,
+        name
+      },
+    });
 
-  if (!email) return null;
-
-  const existingUser = await prisma.user.findUnique({
-    where: { email },
-  });
-
-  if (existingUser) return existingUser;
-
-  const newUser = await prisma.user.create({
-    data: {
-      email,
-      name
-    },
-  });
-
-  return newUser;
+    return newUser;
+  } catch (error) {
+    console.log("error while signing up",error)
+    return null
+  }
 }
 interface ExtendedToken extends JWT {
   accessToken?: string;
