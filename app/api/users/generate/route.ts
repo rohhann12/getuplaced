@@ -1,10 +1,11 @@
+// @ts-ignore
 // Import `GoogleGenerative` from the package we installed earlier.
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { NextRequest, NextResponse } from "next/server";
 
 // Create an asynchronous function POST to handle POST 
 // request with parameters request and response.
-export async function POST(req:NextRequest, res:NextResponse) {
+export async function POST(req:NextRequest) {
 
     try {
         // Access your API key by creating an instance of GoogleGenerativeAI we'll call it GenAI
