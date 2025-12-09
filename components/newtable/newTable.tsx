@@ -119,7 +119,11 @@ export function DataTable<TValue extends Identifiable>({
       }
     } catch (error: any) {
       console.error("Error during email sending:", error);
-      if (error.response?.status === 535) {
+      if (error.response?.status === 402) {
+        toast.error("🔒 You've already used your free email send! Upgrade to send more emails.", {
+          duration: 5000,
+        });
+      } else if (error.response?.status === 535) {
         toast.error("Incorrect Gmail App Password. Check the demo for help.");
       } else if (error.response?.status === 400) {
         toast.error("Bad request. Please check the data you're sending.");

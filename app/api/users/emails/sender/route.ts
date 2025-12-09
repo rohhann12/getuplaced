@@ -16,20 +16,28 @@ export async function POST(req: NextRequest): Promise<any> {
       return NextResponse.json({ message: "No recipients found" }, { status: 400 })
     }
 
-    const appPass = await prisma.user.findUnique({
+    const user = await prisma.user.findUnique({
       where: { email },
-      select: { gmailAppPassword: true },
+      select: { gmailAppPassword: true, sentEmail: true },
     })
 
-    if (!appPass?.gmailAppPassword) {
+    if (!user?.gmailAppPassword) {
       return NextResponse.json({ message: "App password not found" }, { status: 400 })
+    }
+
+    // Check if user has already sent emails (paywall check)
+    if (user.sentEmail > 0) {
+      return NextResponse.json({ 
+        message: "You've already used your free email send. Please upgrade to send more emails.",
+        requiresPayment: true 
+      }, { status: 402 })
     }
 
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
         user: email,
-        pass: appPass.gmailAppPassword,
+        pass: user.gmailAppPassword,
       },
     })
 
