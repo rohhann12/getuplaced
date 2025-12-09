@@ -1,6 +1,6 @@
 "use client";
 
-import { FC } from 'react';
+import React, { FC } from 'react';
 import { motion } from 'framer-motion';
 import { 
   FaEnvelope, 
@@ -12,7 +12,7 @@ import {
 } from 'react-icons/fa';
 
 interface Feature {
-  icon: JSX.Element;
+  icon: React.ReactNode;
   title: string;
   description: string;
   gradient: string;
