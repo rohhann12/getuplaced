@@ -1,9 +1,9 @@
-import NextAuth from "next-auth";
+import NextAuth, { NextAuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import { JWT } from "next-auth/jwt";
 import prisma from "../../../utils/db";
 
-async function lol(googleUser: any) {
+async function upsertUser(googleUser: { email: string | null | undefined; name: string | null | undefined }) {
   try {
     const { email, name } = googleUser;
     if (!email) return null;
@@ -12,25 +12,22 @@ async function lol(googleUser: any) {
     });
     if (existingUser) return existingUser;
     const newUser = await prisma.user.create({
-      data: {
-        email,
-        name
-      },
+      data: { email, name },
     });
-
     return newUser;
   } catch (error) {
-    console.log("error while signing up",error)
-    return null
+    console.log("error while signing up", error);
+    return null;
   }
 }
+
 interface ExtendedToken extends JWT {
   accessToken?: string;
   refreshToken?: string;
   email?: string;
 }
 
-const authOptions = NextAuth({
+export const authOptions: NextAuthOptions = {
   providers: [
     GoogleProvider({
       clientId: process.env.G_CLIENT_ID!,
@@ -50,30 +47,26 @@ const authOptions = NextAuth({
         token.accessToken = account.access_token;
         token.refreshToken = account.refresh_token;
       }
-
       if (user?.email) {
         token.email = user.email;
       }
-
       return token as ExtendedToken;
     },
-    
+
     async session({ session, token }) {
       session.accessToken = (token as ExtendedToken).accessToken;
       return session;
     },
 
     async signIn({ user }) {
-      await lol({
-        email: user.email,
-        name: user.name,
-      });
+      await upsertUser({ email: user.email, name: user.name });
       return true;
     },
   },
   pages: {
     signIn: "/",
   },
-});
+};
 
-export { authOptions as GET, authOptions as POST };
+const handler = NextAuth(authOptions);
+export { handler as GET, handler as POST };
